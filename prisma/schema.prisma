@@ -28,8 +28,9 @@ model Users {
 
 model GameProgress {
     gameProgressId String @id @default(cuid())
-    highestStreak Int
-    userStrength Float
+    highestStreak Int @default(0)
+    userStrength Float @default(0)
+    gamesCount Int @default(0)
     userId String @unique
     user Users @relation(fields: [userId], references: [userId])
     createdAt DateTime  @default(now())
