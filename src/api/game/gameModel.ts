@@ -1,3 +1,4 @@
+import { GameProgress } from "@prisma/client";
 import ModelReturnTypes from "../../entities/ModelReturnTypes";
 import PaginationReturnTypes from "../../entities/PaginationReturnTypes";
 import formatValidationErrors from "../../utils/formatValidationErrors";
@@ -8,7 +9,7 @@ import Params, { ParamsType } from "../../validations/Params";
 
 
 
-const calculateUserStrength = async (userId: string) => {
+const calculatePlayerStrength = async (userId: string) => {
     const userGames = await prismaClient.gameRecords.findMany({
         where: {
             userId
@@ -23,7 +24,7 @@ const calculateUserStrength = async (userId: string) => {
     return validStars / (totalGames * 3) * 100;
 };
 
-const updateUserStats = async (userId: string, streak: number) => {
+const updatePlayerStats = async (userId: string, streak: number) => {
     const userStats = await prismaClient.gameProgress.findFirst({
         where: {
             userId
@@ -37,7 +38,7 @@ const updateUserStats = async (userId: string, streak: number) => {
         }
     });
 
-    const userStrength = await calculateUserStrength(userId);
+    const userStrength = await calculatePlayerStrength(userId);
 
     await prismaClient.gameProgress.update({
         where: {
@@ -68,7 +69,7 @@ const saveGame = async (userId: string, game: GameRecordType) => {
         }
     });
 
-    await updateUserStats(userId, streak);
+    await updatePlayerStats(userId, streak);
 
     res.data = {message: "game saved"};
 
@@ -76,7 +77,7 @@ const saveGame = async (userId: string, game: GameRecordType) => {
 };
 
 const getPlayerStats = async (userId: string) => {
-    const res = {statusCode: 200} as ModelReturnTypes;
+    const res = {statusCode: 200} as ModelReturnTypes<GameProgress>;
 
     const userStats = await prismaClient.gameProgress.findFirst({
         where: {
