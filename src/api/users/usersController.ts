@@ -8,7 +8,7 @@ const users = express.Router();
 
 users.post("/register", async (req, res) => {
     const {error, statusCode, data} = await registerUser(req.body);
-    res.status(statusCode).json({error, data});
+    res.status(statusCode).json(error || data);
 });
 
 users.get("/me", authorize, async (req: SessionRequest, res) => 

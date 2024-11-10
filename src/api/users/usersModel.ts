@@ -11,6 +11,15 @@ const registerUser = async (body: UserType) => {
     const error = formatValidationErrors(validation);
     if (error) return error;
 
+    if (await prismaClient.users.findUnique({
+        where: {
+            username: validation.data!.username
+        }
+    })) {
+        res.error = {error: "User already exists"};
+        return res;
+    }
+
     const data = validation.data!;
     data.password = await hashPassword(data.password);
 
