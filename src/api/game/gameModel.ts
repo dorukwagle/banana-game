@@ -7,8 +7,6 @@ import GameRecord, { GameRecordType } from "../../validations/GameRecord";
 import Params, { ParamsType } from "../../validations/Params";
 
 
-
-
 const calculatePlayerStrength = async (userId: string) => {
     const userGames = await prismaClient.gameRecords.findMany({
         where: {
