@@ -16,8 +16,8 @@ game.get("/stats", async (req: SessionRequest, res) => {
 });
 
 game.post("/", async (req: SessionRequest, res) => {
-    const {statusCode, data} = await saveGame(req.session!.userId, req.body);
-    res.status(statusCode).json(data);
+    const {statusCode, data, error} = await saveGame(req.session!.userId, req.body);
+    res.status(statusCode).json(error || data);
 });
 
 export default game;
