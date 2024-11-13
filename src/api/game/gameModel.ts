@@ -7,15 +7,19 @@ import GameRecord, { GameRecordType } from "../../validations/GameRecord";
 import Params, { ParamsType } from "../../validations/Params";
 
 
+// calculate player strength based on scored stars
 const calculatePlayerStrength = async (userId: string) => {
     const userGames = await prismaClient.gameRecords.findMany({
         where: {
             userId
         }
     });
-
+    // total attempts are 3, so remaining attempts are the stars
+    // 3 + 1 = 4 (4 - remainingAttempts) % 4 gives the scored stars
     const totalGames = userGames.length;
-    const obtainedStars = userGames.reduce((a, b) => a + (b.attemptCount || 0), 0);
+    const obtainedStars = userGames.reduce((a, b) => {
+        return a + ((3 + 1) - (b.attemptCount || 0) % 4);
+    }, 0);
     const gameovers = userGames.reduce((a, b) => a + (b.gameover ? 1 : 0), 0);
 
     const validStars = obtainedStars - gameovers;
